@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 · SelkieLab</title>
+<meta name="theme-color" content="#0f1013">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%236b8afd'/%3E%3Ctext x='50' y='69' font-size='54' font-family='system-ui' font-weight='600' text-anchor='middle' fill='%230f1013'%3ES%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#0f1013;--on:#e8e6ec;--on-var:#a9a6b4;--primary:#6b8afd;--on-primary:#0b1020;--outline:#3a3c47;--spring:cubic-bezier(.2,0,0,1)}
+html[data-theme="light"]{--bg:#f6f5f8;--on:#1a1b20;--on-var:#5b5a66;--primary:#4a63d8;--on-primary:#fff;--outline:#d3d2dc}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:32px;background:var(--bg);color:var(--on);
+  font:15px/1.7 ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  text-align:center}
+.box{max-width:420px; animation:in .5s var(--spring)}
+@keyframes in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.code{font-size:clamp(64px,18vw,104px);font-weight:700;letter-spacing:-.03em;line-height:1;
+  background:linear-gradient(100deg,var(--primary),#3ddc97);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:20px;margin:14px 0 8px;font-weight:600}
+p{color:var(--on-var);margin:0 0 26px;font-size:14px}
+a{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 24px;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);font-weight:600;text-decoration:none;
+  transition:transform .18s var(--spring)}
+a:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.box{animation:none}}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="code">404</div>
+  <h1>这里没有东西</h1>
+  <p>地址可能改过了，或者从来没存在过。</p>
+  <a href="/">回首页</a>
+</div>
+<script>
+try{var t=localStorage.getItem('selkielab-theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=t||(d?'dark':'light');}catch(e){}
+</script>
+</body>
+</html>

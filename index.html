@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SelkieLab · 小而完整的自托管工具</title>
+<meta name="description" content="SelkieLab 是一个小而完整的自托管工具集合。装在自己机器上、数据不出门、出问题能自己看代码修。">
+<meta name="theme-color" content="#0f1013">
+<meta property="og:title" content="SelkieLab · 小而完整的自托管工具">
+<meta property="og:description" content="装在自己机器上、数据不出门、出问题能自己看代码修。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%236b8afd'/%3E%3Ctext x='50' y='69' font-size='54' font-family='system-ui' font-weight='600' text-anchor='middle' fill='%230f1013'%3ES%3C/text%3E%3C/svg%3E">
+<style>
+/* ---------- 设计令牌 ---------- */
+:root{
+  --bg:#0f1013; --surface:#17181d; --surface2:#1e2027; --surface3:#262832;
+  --on:#e8e6ec; --on-var:#a9a6b4; --outline:#3a3c47;
+  --primary:#6b8afd; --on-primary:#0b1020; --primary-c:#1f2a52;
+  --accent:#3ddc97; --warn:#f7c948;
+  --radius:28px; --radius-sm:16px;
+  --spring:cubic-bezier(.2,0,0,1);
+  --shadow:0 18px 50px rgba(0,0,0,.5);
+}
+html[data-theme="light"]{
+  --bg:#f6f5f8; --surface:#ffffff; --surface2:#f0eff4; --surface3:#e6e5ec;
+  --on:#1a1b20; --on-var:#5b5a66; --outline:#d3d2dc;
+  --primary:#4a63d8; --on-primary:#ffffff; --primary-c:#e2e7ff;
+  --accent:#0f9d63; --warn:#b57d00;
+  --shadow:0 14px 40px rgba(30,32,50,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--on);
+  font:15px/1.7 ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  transition:background .3s var(--spring), color .3s var(--spring);
+}
+a{color:var(--primary); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{width:min(980px,100% - 40px); margin-inline:auto}
+code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em}
+
+/* ---------- 顶栏 ---------- */
+header{
+  position:sticky; top:0; z-index:20; backdrop-filter:blur(14px);
+  background:color-mix(in srgb,var(--bg) 78%,transparent);
+  border-bottom:1px solid var(--outline);
+}
+.bar{display:flex; align-items:center; gap:14px; height:62px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:650; letter-spacing:.2px}
+.mark{
+  width:30px; height:30px; border-radius:9px; background:var(--primary); color:var(--on-primary);
+  display:grid; place-items:center; font-size:16px; font-weight:700;
+}
+nav{margin-left:auto; display:flex; align-items:center; gap:6px}
+nav a{color:var(--on-var); font-size:14px; padding:8px 12px; border-radius:999px; transition:.18s var(--spring)}
+nav a:hover{color:var(--on); background:var(--surface2); text-decoration:none}
+.iconbtn{
+  width:40px; height:40px; border-radius:50%; border:1px solid var(--outline); background:transparent;
+  color:var(--on); cursor:pointer; display:grid; place-items:center; font-size:16px;
+  transition:.2s var(--spring);
+}
+.iconbtn:hover{background:var(--surface2)}
+.iconbtn:active{transform:scale(.94)}
+@media (max-width:640px){ nav a:not(.gh){display:none} }
+
+/* ---------- Hero ---------- */
+.hero{padding:76px 0 56px; position:relative; overflow:hidden}
+.hero::before{
+  content:""; position:absolute; inset:-30% -10% auto -10%; height:70%;
+  background:radial-gradient(50% 60% at 20% 0%, color-mix(in srgb,var(--primary) 22%,transparent), transparent 70%),
+             radial-gradient(45% 50% at 85% 10%, color-mix(in srgb,var(--accent) 14%,transparent), transparent 70%);
+  pointer-events:none;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-size:13px; letter-spacing:.4px;
+  color:var(--on-var); border:1px solid var(--outline); border-radius:999px; padding:6px 14px;
+  background:var(--surface); position:relative;
+}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+h1{
+  font-size:clamp(34px,6vw,58px); line-height:1.12; margin:22px 0 0; letter-spacing:-.02em;
+  font-weight:700; position:relative;
+}
+h1 .grad{
+  background:linear-gradient(100deg,var(--primary),var(--accent));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.lede{font-size:clamp(16px,2.2vw,19px); color:var(--on-var); max-width:44ch; margin:20px 0 0; position:relative}
+.lede b{color:var(--on); font-weight:600}
+.cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; position:relative}
+.btn{
+  display:inline-flex; align-items:center; gap:9px; height:48px; padding:0 24px; border-radius:999px;
+  font-size:15px; font-weight:600; border:1px solid transparent; cursor:pointer;
+  transition:transform .18s var(--spring), box-shadow .2s, background .2s;
+}
+.btn:active{transform:scale(.97)}
+.btn.filled{background:var(--primary); color:var(--on-primary); box-shadow:0 8px 24px color-mix(in srgb,var(--primary) 30%,transparent)}
+.btn.filled:hover{text-decoration:none; box-shadow:0 12px 30px color-mix(in srgb,var(--primary) 40%,transparent)}
+.btn.tonal{background:var(--primary-c); color:var(--primary)}
+.btn.outline{border-color:var(--outline); color:var(--on)}
+.btn.outline:hover{background:var(--surface2); text-decoration:none}
+
+/* ---------- 区块 ---------- */
+section{padding:20px 0 46px}
+.sect-head{display:flex; align-items:baseline; gap:14px; margin:26px 0 18px}
+h2{font-size:clamp(21px,3vw,27px); margin:0; letter-spacing:-.01em; font-weight:650}
+.sect-head .sub{color:var(--on-var); font-size:14px}
+
+.grid{display:grid; gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+
+.card{
+  background:var(--surface); border:1px solid var(--outline); border-radius:var(--radius);
+  padding:26px; position:relative; overflow:hidden;
+  transition:transform .3s var(--spring), border-color .25s, box-shadow .3s;
+}
+.card:hover{transform:translateY(-3px); border-color:color-mix(in srgb,var(--primary) 45%,var(--outline)); box-shadow:var(--shadow)}
+.card h3{margin:0 0 8px; font-size:17px; font-weight:650}
+.card p{margin:0; color:var(--on-var); font-size:14px}
+.card .ico{
+  width:42px; height:42px; border-radius:13px; display:grid; place-items:center;
+  background:var(--primary-c); color:var(--primary); font-size:19px; margin-bottom:16px;
+}
+.card.small{padding:20px}
+.card.small .ico{width:36px; height:36px; border-radius:11px; margin-bottom:12px; font-size:16px}
+
+/* ---------- 项目卡 ---------- */
+.project{
+  background:linear-gradient(180deg,var(--surface),color-mix(in srgb,var(--surface2) 60%,var(--surface)));
+  border:1px solid var(--outline); border-radius:var(--radius); padding:30px;
+  transition:transform .3s var(--spring), box-shadow .3s, border-color .25s;
+}
+.project:hover{transform:translateY(-3px); border-color:color-mix(in srgb,var(--primary) 45%,var(--outline)); box-shadow:var(--shadow)}
+.pj-top{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.pj-top h3{margin:0; font-size:20px; font-weight:680}
+.tag{
+  font-size:12px; padding:3px 10px; border-radius:999px; background:var(--surface3);
+  color:var(--on-var); border:1px solid var(--outline);
+}
+.tag.ok{color:var(--accent); border-color:color-mix(in srgb,var(--accent) 40%,var(--outline))}
+.project .desc{color:var(--on-var); margin:12px 0 20px}
+
+table{width:100%; border-collapse:collapse; font-size:14px}
+th,td{text-align:left; padding:9px 0; border-bottom:1px solid var(--outline); vertical-align:top}
+th{color:var(--on-var); font-weight:500; width:110px; white-space:nowrap}
+tr:last-child td,tr:last-child th{border-bottom:none}
+
+.term{
+  margin:22px 0 0; border-radius:var(--radius-sm); border:1px solid var(--outline);
+  background:var(--surface2); overflow:hidden;
+}
+.term-bar{
+  display:flex; align-items:center; gap:8px; padding:10px 14px;
+  border-bottom:1px solid var(--outline); font-size:12px; color:var(--on-var);
+}
+.term-bar i{width:10px; height:10px; border-radius:50%; background:var(--outline)}
+.term pre{margin:0; padding:16px 18px; overflow-x:auto; font-size:13.5px; line-height:1.75; color:var(--on)}
+.term .cmt{color:var(--on-var)}
+.copy{
+  margin-left:auto; font-size:12px; background:transparent; border:1px solid var(--outline);
+  color:var(--on-var); border-radius:999px; padding:3px 12px; cursor:pointer; transition:.18s;
+}
+.copy:hover{color:var(--on); background:var(--surface3)}
+
+/* ---------- 取舍表 ---------- */
+.principle{
+  display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start;
+  padding:20px 0; border-bottom:1px solid var(--outline);
+}
+.principle:last-child{border-bottom:none}
+.pick{
+  font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px; white-space:nowrap;
+  background:var(--primary-c); color:var(--primary);
+}
+.principle b{display:block; margin-bottom:3px}
+.principle span{color:var(--on-var); font-size:14px}
+
+/* ---------- 步进 ---------- */
+.steps{counter-reset:s; display:grid; gap:14px}
+.step{
+  counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start;
+  background:var(--surface); border:1px solid var(--outline); border-radius:var(--radius-sm); padding:18px 22px;
+}
+.step::before{
+  content:"0" counter(s); font-variant-numeric:tabular-nums; font-weight:700; font-size:13px;
+  color:var(--primary); background:var(--primary-c); border-radius:9px; padding:4px 10px; height:fit-content;
+}
+.step b{display:block; margin-bottom:2px}
+.step span{color:var(--on-var); font-size:14px}
+
+/* ---------- 底栏 ---------- */
+footer{border-top:1px solid var(--outline); padding:34px 0 54px; color:var(--on-var); font-size:14px}
+.foot{display:flex; flex-wrap:wrap; gap:16px; align-items:center}
+.foot nav{margin-left:auto; gap:2px}
+.foot nav a{padding:6px 10px; font-size:13px}
+
+/* ---------- 入场动效 ---------- */
+.reveal{opacity:0; transform:translateY(18px); transition:opacity .55s var(--spring), transform .55s var(--spring)}
+.reveal.in{opacity:1; transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1; transform:none; transition:none}
+  .card,.project{transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand"><span class="mark">S</span> SelkieLab</div>
+    <nav>
+      <a href="#projects">项目</a>
+      <a href="#values">取向</a>
+      <a href="#stack">技术栈</a>
+      <a href="#start">上手</a>
+      <a class="gh" href="https://github.com/SelkieLab" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+    <button class="iconbtn" id="themeBtn" aria-label="切换明暗主题" title="切换明暗主题">◐</button>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <span class="eyebrow"><span class="dot"></span> 小而完整的自托管工具</span>
+  <h1>装在自己机器上的<br><span class="grad">那套东西</span></h1>
+  <p class="lede">
+    不追求大而全，只做<b>一个人也维护得动</b>的工具。<br>
+    数据不出门，出问题能自己看代码修。
+  </p>
+  <div class="cta">
+    <a class="btn filled" href="#projects">看看做了什么</a>
+    <a class="btn outline" href="https://github.com/SelkieLab/bot-panel" target="_blank" rel="noopener">第一个项目 ↗</a>
+  </div>
+</div>
+
+<section class="wrap" id="values">
+  <div class="sect-head"><h2>取向</h2><span class="sub">做东西时反复回到的几条判断</span></div>
+  <div class="grid g3">
+    <div class="card reveal">
+      <div class="ico">◇</div>
+      <h3>少依赖</h3>
+      <p>标准库能写就不引包。三年后 <code>pip install</code> 挂了，代码还在。</p>
+    </div>
+    <div class="card reveal">
+      <div class="ico">◻</div>
+      <h3>可懂优先</h3>
+      <p>一个人读不完的架构，等于没人能维护。宁可少个功能。</p>
+    </div>
+    <div class="card reveal">
+      <div class="ico">◈</div>
+      <h3>安全不让步</h3>
+      <p>面板这类东西一旦被拿了就是整台机器，这里没有"先凑合"。</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="projects">
+  <div class="sect-head"><h2>项目</h2><span class="sub">目前 1 个，慢慢加</span></div>
+
+  <div class="project reveal">
+    <div class="pj-top">
+      <h3>bot-panel</h3>
+      <span class="tag ok">活跃</span>
+      <span class="tag">Python</span>
+      <span class="tag">MIT</span>
+    </div>
+    <p class="desc">
+      AstrBot + SnowLuma 的控制面板。把 QQ 机器人的日常运维收进一个网页：
+      容器状态、实时日志、插件市场、人格提示词、扫码登录、知识库，全在一个界面里。
+    </p>
+
+    <table>
+      <tr><th>后端</th><td>单文件 <code>server.py</code>，纯 Python 标准库，零第三方依赖</td></tr>
+      <tr><th>前端</th><td>MD3 单页应用，partials 分片加载，移动端可用，PWA 离线兜底</td></tr>
+      <tr><th>运维</th><td>2700+ 插件分页 / 分类 / 排序、安装卸载更新、SSE 实时日志</td></tr>
+      <tr><th>安全</th><td>PBKDF2 口令、TOTP 两步验证、会话失效、审计日志、QQ / webhook 告警</td></tr>
+      <tr><th>部署</th><td>systemd 非特权用户 + 只读文件系统 + 最小 syscall 集合</td></tr>
+      <tr><th>备份</th><td>每日自动，sqlite 在线快照，只备不可再生数据</td></tr>
+    </table>
+
+    <div class="term">
+      <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:6px">bash</span>
+        <button class="copy" data-copy="git clone https://github.com/SelkieLab/bot-panel.git&#10;cd bot-panel&#10;PANEL_INIT_PASSWORD='你的密码' python3 server.py">复制</button>
+      </div>
+      <pre><span class="cmt"># 需要 Python 3.8+ 和 Docker</span>
+git clone https://github.com/SelkieLab/bot-panel.git
+cd bot-panel
+PANEL_INIT_PASSWORD='你的密码' python3 server.py</pre>
+    </div>
+
+    <div class="cta">
+      <a class="btn tonal" href="https://github.com/SelkieLab/bot-panel" target="_blank" rel="noopener">仓库 ↗</a>
+      <a class="btn outline" href="https://github.com/SelkieLab/bot-panel#readme" target="_blank" rel="noopener">README</a>
+      <a class="btn outline" href="https://github.com/SelkieLab/bot-panel/blob/main/docs/CHANGELOG-2026-10-23.md" target="_blank" rel="noopener">改造记录</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="start">
+  <div class="sect-head"><h2>上手</h2><span class="sub">以 bot-panel 为例</span></div>
+  <div class="steps">
+    <div class="step reveal"><div><b>准备环境</b><span>Python 3.8+，Docker，以及要管的两个容器</span></div></div>
+    <div class="step reveal"><div><b>克隆并启动</b><span>设一个初始口令，其余配置在界面里填</span></div></div>
+    <div class="step reveal"><div><b>上 HTTPS</b><span>直接加载证书或用 Nginx / Caddy 反代，裸 HTTP 暴露公网等于明文发密码</span></div></div>
+    <div class="step reveal"><div><b>收窄端口</b><span>安全组只放行自己的 IP，顺手开两步验证</span></div></div>
+  </div>
+</section>
+
+<section class="wrap" id="stack">
+  <div class="sect-head"><h2>技术栈</h2><span class="sub">够用就好</span></div>
+  <div class="grid g3">
+    <div class="card small reveal"><div class="ico">Py</div><h3>Python</h3><p>标准库优先，单文件能跑</p></div>
+    <div class="card small reveal"><div class="ico">JS</div><h3>原生 JS</h3><p>不引框架，MD3 手写</p></div>
+    <div class="card small reveal"><div class="ico">Dk</div><h3>Docker</h3><p>镜像固定 digest，升级显式</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>© 2026 SelkieLab · 内容以 MIT 许可发布</div>
+    <nav>
+      <a href="https://github.com/SelkieLab" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/orgs/SelkieLab/repositories" target="_blank" rel="noopener">全部仓库</a>
+      <a href="https://github.com/SelkieLab/bot-panel/issues" target="_blank" rel="noopener">反馈</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* 主题：跟随系统，可手动切换并记住 */
+(function () {
+  var KEY = 'selkielab-theme';
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = saved || (sysDark ? 'dark' : 'light');
+  var btn = document.getElementById('themeBtn');
+  btn.addEventListener('click', function () {
+    var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+
+/* 入场：错峰淡入 */
+(function () {
+  var items = [].slice.call(document.querySelectorAll('.reveal'));
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var el = en.target;
+      var i = items.indexOf(el);
+      el.style.transitionDelay = Math.min(i % 6, 5) * 60 + 'ms';
+      el.classList.add('in');
+      io.unobserve(el);
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+  items.forEach(function (el) { io.observe(el); });
+
+  // 兜底：若观察器没触发（旧浏览器 / 特殊渲染环境），1.5s 后强制显示，绝不留下不可见内容
+  setTimeout(function () {
+    items.forEach(function (el) { if (!el.classList.contains('in')) el.classList.add('in'); });
+  }, 1500);
+})();
+
+/* 复制命令 */
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('.copy');
+  if (!b) return;
+  var text = b.getAttribute('data-copy');
+  var done = function () { var o = b.textContent; b.textContent = '已复制'; setTimeout(function () { b.textContent = o; }, 1400); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () {});
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (err) {}
+    document.body.removeChild(ta);
+  }
+});
+</script>
+</body>
+</html>
