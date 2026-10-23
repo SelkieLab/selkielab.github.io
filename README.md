@@ -10,7 +10,7 @@ https://selkielab.github.io
 
 | 区块 | 内容 |
 |---|---|
-| `设计令牌` | 配色、圆角、曲线、阴影，改 `:root` 就能换整套外观 |
+| `MD3 颜色角色` | primary / surface-container 分级 / outline-variant，改 `:root` 换整套外观；浅色主题在 `html[data-theme=light]` |
 | `顶栏` / `Hero` | 导航与首屏 |
 | `区块` / `项目卡` | 卡片与项目展示的通用样式 |
 | `入场动效` | `.reveal` 错峰淡入，系统开了「减少动效」会自动关掉 |
@@ -26,7 +26,8 @@ python3 -m http.server 8000
 
 ## 已包含
 
-* 深色 / 浅色主题，跟随系统并可手动切换（记在 localStorage）
+* MD3 色板与形状令牌，深色 / 浅色主题跟随系统、可手动切换（记在 localStorage）
+* 按钮 / 卡片 / chips / list item 按 M3 规范，带 ripple 与 state layer
 * 移动端优先，窄屏自动收起导航
 * 语义化标签 + aria 标签，键盘可达
 * `prefers-reduced-motion` 尊重系统设置
